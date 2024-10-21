@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bahn Projekt</title>
+    <!-- Bootstrap CSS importieren -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bg-primary text-white p-3">
+        <nav>
+            <ul class="nav d-flex justify-content-center">
+                <li class="nav-item"><a class="nav-link text-white" href="index.html">Startseite</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="pages/about.html">Über uns</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container mt-4">
+        <h1 class="text-center">StationSync</h1>
+    
+        <div class="input-container mb-2 text-center d-flex justify-content-center">
+            <div class="mb-2">
+                <label for="start">Startbahnhof:</label>
+                <input type="text" id="start" name="start" class="form-control" placeholder="Geben Sie den Startbahnhof ein" required>
+            </div>
+            <div class="mb-2">
+                <label for="ziel">Zielbahnhof:</label>
+                <input type="text" id="ziel" name="ziel" class="form-control" placeholder="Geben Sie den Zielbahnhof ein" required>
+            </div>
+        </div>
+        <div class="input-container mb-3 text-center">
+            <label for="datum">Reisedatum:</label>
+            <input type="date" id="datum" name="datum" class="form-control" required>
+        </div>
+        <div class="input-container mb-3 text-center">
+            <label for="uhrzeit">Reisezeit:</label>
+            <input type="time" id="uhrzeit" name="uhrzeit" class="form-control" required>
+        </div>
+        <button class="btn btn-primary btn-block">Suche Bahnverbindung</button>
+    </div>
+    <footer class="bg-light text-center p-3">
+        <p>&copy; 2024 StationSync. Alle Rechte vorbehalten.</p>
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#haftungsausschluss-modal">
+            Haftungsausschluss
+        </button>
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#datenschutz-modal">
+            Datenschutz
+        </button>
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#kontakt-modal">
+            Kontakt
+        </button>
+    </footer>
+    
+    <script>
+        $(document).ready(function() {
+            $('#haftungsausschluss-modal').load('./modal/haftungsausschluss-modal.html');
+            $('#datenschutz-modal').load('./modal/datenschutz-modal.html');
+            $('#kontakt-modal').load('./modal/kontakt-modal.html');
+        });
+    </script>
+
+    <!-- Bootstrap JS und jQuery importieren -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

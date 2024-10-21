@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center; /* Zentriert den Text */
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4; /* Heller Hintergrund für bessere Lesbarkeit */
+}
+
+header {
+    background-color: #c8102e; /* Rot für die Deutsche Bahn */
+    padding: 10px 0;
+    color: white; /* Weißer Text auf rotem Hintergrund */
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline; /* Horizontale Anordnung der Navigation */
+    margin: 0 15px; /* Abstand zwischen den Links */
+}
+
+nav ul li a {
+    color: white; /* Weißer Text für Links */
+    text-decoration: none;
+}
+
+h1 {
+    margin: 20px 0; /* Abstand oben und unten */
+    color: #c8102e; /* Rot für die Überschrift */
+}
+
+.input-container {
+    margin: 15px 0; /* Abstand zwischen den Eingabefeldern */
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto; /* sorgt dafür, dass der Footer am Ende bleibt */
+}
