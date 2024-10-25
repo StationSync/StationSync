@@ -23,17 +23,10 @@
     </header>
     <div class="container mt-4">
 
-        <div class="input-container mb-2 text-center d-flex justify-content-center">
-            <div class="mb-2">
-                <label for="start">Startbahnhof:</label>
-                <input type="text" id="start" name="start" class="form-control"
-                    placeholder="Geben Sie den Startbahnhof ein" required>
-            </div>
-            <div class="mb-2">
-                <label for="ziel">Zielbahnhof:</label>
-                <input type="text" id="ziel" name="ziel" class="form-control"
-                    placeholder="Geben Sie den Zielbahnhof ein" required>
-            </div>
+        <!-- Die Anforderung sagt es wird nur der Startbahnhof benötigt... Kann später aber wieder geändert werden -->
+        <div class="input-container mb-3 text-center">
+            <label for="trainStation">Bahnhof:</label>
+            <input id="trainStation" type="text" id="datum" name="trainStation" class="form-control" required>
         </div>
         <div class="input-container mb-3 text-center">
             <label for="datum">Reisedatum:</label>
@@ -129,6 +122,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Import der autocomplete Komponente -->
+    <script src="./components/autocomplete.js"></script>
+
+    <script>
+        // Your data array
+        const countries = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola",
+            "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan"
+        ];
+
+        // Initialize the autocomplete
+        const input = document.getElementById('trainStation');
+        const autocomplete = new AutocompleteInput(input, {
+            data: countries,
+            placeholder: 'Nach Bahnhof suchen...',
+            onSelect: (selectedItem) => {
+                console.log('Selected:', selectedItem);
+                // Do something with the selection
+            }
+        });
+    </script>
+
     <!-- Bootstrap JS und jQuery importieren -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
