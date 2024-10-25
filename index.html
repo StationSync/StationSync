@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css_files/style.css">
 </head>
+
 <body>
     <header class="bg-primary text-white p-3">
         <nav>
@@ -20,15 +22,17 @@
     </header>
     <div class="container mt-4">
         <h1 class="text-center">StationSync</h1>
-    
+
         <div class="input-container mb-2 text-center d-flex justify-content-center">
             <div class="mb-2">
                 <label for="start">Startbahnhof:</label>
-                <input type="text" id="start" name="start" class="form-control" placeholder="Geben Sie den Startbahnhof ein" required>
+                <input type="text" id="start" name="start" class="form-control"
+                    placeholder="Geben Sie den Startbahnhof ein" required>
             </div>
             <div class="mb-2">
                 <label for="ziel">Zielbahnhof:</label>
-                <input type="text" id="ziel" name="ziel" class="form-control" placeholder="Geben Sie den Zielbahnhof ein" required>
+                <input type="text" id="ziel" name="ziel" class="form-control"
+                    placeholder="Geben Sie den Zielbahnhof ein" required>
             </div>
         </div>
         <div class="input-container mb-3 text-center">
@@ -39,7 +43,7 @@
             <label for="uhrzeit">Reisezeit:</label>
             <input type="time" id="uhrzeit" name="uhrzeit" class="form-control" required>
         </div>
-        <button class="btn btn-primary btn-block">Suche Bahnverbindung</button>
+        <button class="btn btn-primary btn-block">Bahnverbindung suchen</button>
     </div>
     <footer class="bg-light text-center p-3">
         <p>&copy; 2024 StationSync. Alle Rechte vorbehalten.</p>
@@ -53,8 +57,9 @@
             Kontakt
         </button>
     </footer>
-    
-    <div class="modal fade" id="kontakt-modal" tabindex="-1" role="dialog" aria-labelledby="kontakt-modal-label" aria-hidden="true">
+
+    <div class="modal fade" id="kontakt-modal" tabindex="-1" role="dialog" aria-labelledby="kontakt-modal-label"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -75,7 +80,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="haftungsausschluss-modal" tabindex="-1" role="dialog" aria-labelledby="haftungsausschluss-modal-label" aria-hidden="true">
+    <div class="modal fade" id="haftungsausschluss-modal" tabindex="-1" role="dialog"
+        aria-labelledby="haftungsausschluss-modal-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -86,9 +92,12 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        Die auf dieser Website bereitgestellten Informationen und Dienstleistungen werden ohne Gewährleistung für Richtigkeit, Vollständigkeit oder Aktualität bereitgestellt.
-                        Wir übernehmen keine Haftung für Verzögerungen oder Ausfälle von Bahnverbindungen, die aufgrund von Umständen außerhalb unserer Kontrolle entstehen.
-                        Bitte beachten Sie, dass die Ankunfts- und Abfahrtszeiten von Zügen je nach Verkehrslage variieren können.
+                        Die auf dieser Website bereitgestellten Informationen und Dienstleistungen werden ohne
+                        Gewährleistung für Richtigkeit, Vollständigkeit oder Aktualität bereitgestellt.
+                        Wir übernehmen keine Haftung für Verzögerungen oder Ausfälle von Bahnverbindungen, die aufgrund
+                        von Umständen außerhalb unserer Kontrolle entstehen.
+                        Bitte beachten Sie, dass die Ankunfts- und Abfahrtszeiten von Zügen je nach Verkehrslage
+                        variieren können.
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -97,7 +106,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="datenschutz-modal" tabindex="-1" role="dialog" aria-labelledby="datenschutz-modal-label" aria-hidden="true">
+    <div class="modal fade" id="datenschutz-modal" tabindex="-1" role="dialog" aria-labelledby="datenschutz-modal-label"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -109,7 +119,8 @@
                 <div class="modal-body">
                     <p>
                         Wir nehmen den Schutz Ihrer persönlichen Daten ernst. Bitte lesen Sie unsere
-                        <a href="pages/datenschutz.html">Datenschutzerklärung</a>, um mehr über die Verarbeitung und den Schutz Ihrer Daten zu erfahren.
+                        <a href="pages/datenschutz.html">Datenschutzerklärung</a>, um mehr über die Verarbeitung und den
+                        Schutz Ihrer Daten zu erfahren.
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -122,4 +133,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
