@@ -23,6 +23,8 @@ ausdrücklich NICHT Teil der Mindestanforderungen
 
 [FaSta - Station Facilities Status](https://developers.deutschebahn.com/db-api-marketplace/apis/product/fasta)
 
+[Timetables](https://developers.deutschebahn.com/db-api-marketplace/apis/product/timetables)
+
 ## How to get started
 
 Set **CLIENT_ID** and **CLIENT_SECRET** inside the `.env` file with your own from [Deutsche Bahn API Marketplace](https://developers.deutschebahn.com/db-api-marketplace/apis/)
