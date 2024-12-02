@@ -2,7 +2,7 @@
 
 // $ composer require vlucas/phpdotenv 
 
-function loadEnv($path = '../.env') {
+function loadEnv($path = __DIR__ . '/../.env') {
 
 if(!file_exists($path)) {
 
