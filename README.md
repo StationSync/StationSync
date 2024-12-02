@@ -17,6 +17,17 @@ gibt.
 - Mindestens eine rudimentäre CSS-Datei, welche im HTML eingebunden ist. Design ist aber
 ausdrücklich NICHT Teil der Mindestanforderungen
 
+## Other features
+
+Sie bekomme weitere Punkte für den Ausbau der Webseite. Dies sind nur Beispiele. Sie haben recht
+freie Kreativität.
+- Weitere Funktionalitäten mit den APIs oder anderen APIs der Bahn
+- Design und Nutzerfreundlichkeit
+- Ausbau der Funktionen der Mindestanforderungen, z.B. Angabe eine Uhrzeit, Routenangabe
+usw.
+- Weitere Angaben zu Stationsdetails
+- Ticketanzeige mit Preisgestaltung usw.
+
 ## Used Deutsche Bahn API Endpoints
 
 [StaDa - Station Data](https://developers.deutschebahn.com/db-api-marketplace/apis/product/stada)
