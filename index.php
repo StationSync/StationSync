@@ -36,16 +36,20 @@ foreach ($stationsArray['result'] as $station) {
 // Proceed to render the HTML only if stations are retrieved successfully
 ?>
 
+<!-- Festlegen des Titel und der zugehörigen Style.css sowie Links zu den Libary´s -->
+
 <!DOCTYPE html>
 <html lang="de">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>StationSync</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="css_files/style.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StationSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css_files/style.css">
+</head>
+
+<!-- Die Navigationbar -->
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -90,6 +94,8 @@ foreach ($stationsArray['result'] as $station) {
         </div>-->
     </nav>
 
+
+<!-- Das Fenster indem die Daten angegeben werden können -->
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -127,7 +133,8 @@ foreach ($stationsArray['result'] as $station) {
         </div>
     </div>
 
-    <!-- Footer -->
+<!-- Der Footer -->
+
     <footer class="bg-dark text-light py-4 mt-5">
         <div class="container text-center">
             <p>&copy; 2024 StationSync. Alle Rechte vorbehalten.</p>
@@ -139,9 +146,74 @@ foreach ($stationsArray['result'] as $station) {
         </div>
     </footer>
 
+<!-- Festlegen der Daten die Bei den Buttons vom Footer geöffnet werden (erst Kontakt dann Haftungsausschluss und zuletzt Datenschutz) -->
+        <div class="modal fade" id="kontakt-modal" tabindex="-1" role="dialog" aria-labelledby="kontakt-modal-label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="kontakt-modal-label">Kontakt</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Für Fragen oder Anliegen wenden Sie sich bitte an unseren
+                            <a href="pages/contact.html">Kontakt</a>.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Old autocomplete script -->
-    
+
+        <div class="modal fade" id="haftungsausschluss-modal" tabindex="-1" role="dialog"
+            aria-labelledby="haftungsausschluss-modal-label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="haftungsausschluss-modal-label">Haftungsausschluss</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Die auf dieser Website bereitgestellten Informationen und Dienstleistungen werden ohne
+                            Gewährleistung für Richtigkeit, Vollständigkeit oder Aktualität bereitgestellt.
+                            Wir übernehmen keine Haftung für Verzögerungen oder Ausfälle von Bahnverbindungen, die aufgrund
+                            von Umständen außerhalb unserer Kontrolle entstehen.
+                            Bitte beachten Sie, dass die Ankunfts- und Abfahrtszeiten von Zügen je nach Verkehrslage
+                            variieren können.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="datenschutz-modal" tabindex="-1" role="dialog" aria-labelledby="datenschutz-modal-label"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="datenschutz-modal-label">Datenschutz</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Wir nehmen den Schutz Ihrer persönlichen Daten ernst. Bitte lesen Sie unsere
+                            <a href="pages/datenschutz.html">Datenschutzerklärung</a>, um mehr über die Verarbeitung und den
+                            Schutz Ihrer Daten zu erfahren.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="components/autocomplete.js"></script>
     
