@@ -1,51 +1,48 @@
-nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline; /* Horizontale Anordnung der Navigation */
-    margin: 0 15px; /* Abstand zwischen den Links */
-}
-
-nav ul li a {
-    color: white; /* Weißer Text für Links */
-    text-decoration: none;
-}
-
-.input-container {
-    margin: 15px 0; /* Abstand zwischen den Eingabefeldern */
-}
-
-html, body {
-    height: 100%;
+:root {
+    --bs-primary: #3498db;    
+    --bs-secondary: #2c3e50;  
+    --bs-success: #2ecc71;    
+    --bs-info: #1abc9c;       
+    --bs-warning: #f39c12;    
+    --bs-danger: #e74c3c;     
+    --bs-light: #ecf0f1;      
+    --bs-dark: #34495e;       
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
 }
 
-.container {
-    flex: 1;
+.navbar {
+    background-color: var(--bs-primary);
+}
+
+.hero-section {
+    background: linear-gradient(135deg, 
+        var(--bs-primary) 0%, 
+        var(--bs-info) 100%);
+    color: white;
+}
+
+.search-form {
+    background-color: white;
+    border: 1px solid var(--bs-info);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+.btn-search {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    background-color: var(--bs-info);
+    transform: translateY(-3px);
 }
 
 footer {
-    margin-top: auto; /* sorgt dafür, dass der Footer am Ende bleibt */
-}
-
-.autocomplete-items {
-    border: 1px solid #ddd;
-    border-top: none;
-    z-index: 99;
-    top: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.list-group-item-action.active {
-    z-index: 2;
-    color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: var(--bs-secondary);
+    color: var(--bs-light);
 }
