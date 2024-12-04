@@ -136,9 +136,16 @@ if ($timetable) {
     <?php
     if (!empty($station2)) {
         $connections = array_filter($connections, function ($connection) use ($station2) {
-            // Check if departure route_after exists and contains $station2
-            return isset($connection['departure']['route_after']) &&
-                in_array($station2, $connection['departure']['route_after']);
+            // Check if departure route_after exists
+            if (isset($connection['departure']['route_after'])) {
+                // Check if $station2 is in the route_after OR if any route_after station is in $station2
+                return in_array($station2, $connection['departure']['route_after']) ||
+                    array_reduce($connection['departure']['route_after'], function ($carry, $routeStation) use ($station2) {
+                        return $carry || stripos($station2, $routeStation) !== false ||
+                            stripos($routeStation, $station2) !== false;
+                    }, false);
+            }
+            return false;
         });
     }
     ?>
@@ -152,7 +159,7 @@ if ($timetable) {
                     <th>Zeit Ankunft</th>
                     <th>Route vor der Ankunft in <?php echo htmlspecialchars($station); ?></th>
                     <th>Gleis Abfahrt</th>
-                    <th>Zeit Anfahrt</th>
+                    <th>Zeit Abfahrt</th>
                     <th>Route nach der Abfahrt in <?php echo htmlspecialchars($station); ?></th>
                 </tr>
             </thead>
@@ -172,8 +179,7 @@ if ($timetable) {
                         </td>
                         <td>
                             <?php echo isset($connection['arrival']['time']) ?
-                                htmlspecialchars(date('H:i', strtotime($connection['arrival']['time']))) : ''; ?>
-                        </td>
+                                htmlspecialchars(substr($connection['arrival']['time'], -4, 2) . ':' . substr($connection['arrival']['time'], -2)) : ''; ?></td>
                         <td>
                             <?php if (isset($connection['arrival']['route_before'])): ?>
                                 <div class="route text-truncate">
@@ -189,8 +195,7 @@ if ($timetable) {
                         </td>
                         <td>
                             <?php echo isset($connection['departure']['time']) ?
-                                htmlspecialchars(date('H:i', strtotime($connection['departure']['time']))) : ''; ?>
-                        </td>
+                                htmlspecialchars(substr($connection['departure']['time'], -4, 2) . ':' . substr($connection['departure']['time'], -2)) : ''; ?></td>
                         <td>
                             <?php if (isset($connection['departure']['route_after'])): ?>
                                 <div class="route text-truncate">
