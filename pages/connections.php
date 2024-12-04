@@ -1,6 +1,7 @@
 <?php
 
 $station =  $_GET['trainStation'];
+$station2 =  $_GET['trainStation2'];
 $evaNumber = $_GET['evaNumber'];
 $date = $_GET['datum'];
 $time = $_GET['uhrzeit'];
@@ -11,6 +12,8 @@ $hour = date('H', strtotime($time));
 
 require_once '../api_routes/timetable.php';
 require_once '../api_routes/fasta_stations.php';
+require_once '../helper_functions/xmlToJson.php';
+require_once '../helper_functions/consoleLog.php';
 
 // Initialize connections array
 $connections = [];
@@ -28,64 +31,54 @@ if (is_string($facilities)) {
 
 if ($timetable) {
 
+    $timetableJson = xml_to_json($timetable, JSON_PRETTY_PRINT);
+    $timetableData = json_decode($timetableJson, true);
+
+    console_log($timetableJson);
+
     // Check if timetable is empty or false
-    if ($timetable === false || $timetable === null) {
-        $errorMessage = "getTimetableByStation() returned false or null.";
-    } elseif (trim($timetable) === '') {
-        $errorMessage = "Timetable data is an empty string.";
+    if ($timetableData === null) {
+        $errorMessage = "Failed to parse timetable JSON.";
     } else {
-        // Attempt to parse the XML
-        libxml_use_internal_errors(true); // Enable user error handling
-        $xml = simplexml_load_string($timetable);
+        $connections = [];
 
-        // Check for XML parsing errors
-        if ($xml === false) {
-            $errors = libxml_get_errors();
-            $errorMessage = "XML Parsing Errors:\n";
-            foreach ($errors as $error) {
-                $errorMessage .= "  - " . $error->message . "\n";
-            }
-            libxml_clear_errors();
-        } else {
-            // Successfully parsed XML
-            // Loop through each service (s) in the XML
-            foreach ($xml->s as $service) {
-                $connection = [
-                    'id' => (string)$service['id'],
-                    'train_line' => [
-                        'type' => (string)$service->tl['c'],
-                        'number' => (string)$service->tl['n'],
-                        'operator' => (string)$service->tl['o']
-                    ]
+        // Loop through each service in the JSON
+        foreach ($timetableData['s'] as $service) {
+            $connection = [
+                'id' => $service['attributes']['id'],
+                'train_line' => [
+                    'type' => $service['tl']['attributes']['c'],
+                    'number' => $service['tl']['attributes']['n'],
+                    'operator' => $service['tl']['attributes']['o']
+                ]
+            ];
+
+            // Check for arrival
+            if (isset($service['ar'])) {
+                $connection['arrival'] = [
+                    'platform' => $service['ar']['attributes']['pp'],
+                    'time' => $service['ar']['attributes']['pt'],
+                    'line' => $service['ar']['attributes']['l'],
+                    'route_before' => explode('|', $service['ar']['attributes']['ppth'])
                 ];
-
-                // Check for arrival
-                if ($service->ar) {
-                    $connection['arrival'] = [
-                        'platform' => (string)$service->ar['pp'],
-                        'time' => (string)$service->ar['pt'],
-                        'line' => (string)$service->ar['l'],
-                        'route_before' => explode('|', (string)$service->ar['ppth'])
-                    ];
-                }
-
-                // Check for departure
-                if ($service->dp) {
-                    $connection['departure'] = [
-                        'platform' => (string)$service->dp['pp'],
-                        'time' => (string)$service->dp['pt'],
-                        'line' => (string)$service->dp['l'],
-                        'route_after' => explode('|', (string)$service->dp['ppth'])
-                    ];
-                }
-
-                $connections[] = $connection;
             }
 
-            // Check if no connections were found
-            if (empty($connections)) {
-                $errorMessage = "No connections found for this station and time.";
+            // Check for departure
+            if (isset($service['dp'])) {
+                $connection['departure'] = [
+                    'platform' => $service['dp']['attributes']['pp'],
+                    'time' => $service['dp']['attributes']['pt'],
+                    'line' => $service['dp']['attributes']['l'],
+                    'route_after' => explode('|', $service['dp']['attributes']['ppth'])
+                ];
             }
+
+            $connections[] = $connection;
+        }
+
+        // Check if no connections were found
+        if (empty($connections)) {
+            $errorMessage = "No connections found for this station and time.";
         }
     }
 }
@@ -139,6 +132,16 @@ if ($timetable) {
             <?php echo nl2br(htmlspecialchars($debugInfo)); ?>
         </div>
     <?php endif; ?>
+
+    <?php
+    if (!empty($station2)) {
+        $connections = array_filter($connections, function ($connection) use ($station2) {
+            // Check if departure route_after exists and contains $station2
+            return isset($connection['departure']['route_after']) &&
+                in_array($station2, $connection['departure']['route_after']);
+        });
+    }
+    ?>
 
     <?php if (!empty($connections)): ?>
         <table class="table table-striped table-hover table-bordered">
