@@ -12,6 +12,8 @@
 body {
     background-color: var(--bs-light);
     color: var(--bs-dark);
+	display: flex;
+	flex-direction: column;
 }
 
 .navbar {
@@ -43,6 +45,9 @@ body {
 }
 
 footer {
-    background-color: var(--bs-secondary);
-    color: var(--bs-light);
+	width:100%;
+	height: 140px;
+	background-color: var(--bs-secondary);
+	color: var(--bs-light);
+	margin-top: auto;
 }

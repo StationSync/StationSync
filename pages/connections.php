@@ -148,6 +148,17 @@ if ($timetable) {
             white-space: pre-wrap;
             font-family: monospace;
         }
+        body {
+        	display: flex;
+        	flex-direction: column;
+        }
+        footer {
+        	width:100%;
+        	height: 140px;
+        	background-color: var(--bs-secondary);
+        	color: var(--bs-light);
+        	margin-top: auto;
+        }
     </style>
 </head>
 
