@@ -6,6 +6,8 @@ $evaNumber = $_GET['evaNumber'];
 $date = $_GET['datum'];
 $time = $_GET['uhrzeit'];
 $number = $_GET['number'];
+$longitude = 6.766979;
+$latitude = 51.278517;
 
 $formattedDate = date('ymd', strtotime($date));
 $hour = date('H', strtotime($time));
@@ -32,44 +34,88 @@ if (is_string($facilities)) {
 if ($timetable) {
 
     $timetableJson = xml_to_json($timetable, JSON_PRETTY_PRINT);
+    $changesJson = xml_to_json($changes, JSON_PRETTY_PRINT);
+
     $timetableData = json_decode($timetableJson, true);
+    $changesData = json_decode($changesJson, true);
 
     console_log($timetableJson);
+    console_log($changesJson);
+
+    // Create a mapping of changes by service ID
+    $changesMap = [];
+    if (isset($changesData['s'])) {
+        // Ensure $changesData['s'] is an array
+        $changesServices = is_array($changesData['s']) ? $changesData['s'] : [$changesData['s']];
+
+        foreach ($changesServices as $service) {
+            // Check if service has the necessary attributes
+            if (!isset($service['attributes']['id'])) continue;
+
+            $serviceId = $service['attributes']['id'];
+
+            // Check if messages exist
+            if (isset($service['m'])) {
+                // Ensure messages is an array
+                $messages = is_array($service['m']) ? $service['m'] : [$service['m']];
+
+                foreach ($messages as $message) {
+                    // Check if message has the required attributes
+                    if (!isset($message['attributes'])) continue;
+
+                    $changesMap[$serviceId][] = [
+                        'type' => $message['attributes']['t'] ?? '',
+                        'category' => $message['attributes']['cat'] ?? '',
+                        'from' => $message['attributes']['from'] ?? '',
+                        'to' => $message['attributes']['to'] ?? ''
+                    ];
+                }
+            }
+        }
+    }
 
     // Check if timetable is empty or false
     if ($timetableData === null) {
         $errorMessage = "Failed to parse timetable JSON.";
     } else {
+        // Modify connections parsing
         $connections = [];
+        // Ensure $timetableData['s'] is an array
+        $services = is_array($timetableData['s']) ? $timetableData['s'] : [$timetableData['s']];
 
-        // Loop through each service in the JSON
-        foreach ($timetableData['s'] as $service) {
+        foreach ($services as $service) {
+            // Skip if service doesn't have attributes
+            if (!isset($service['attributes']['id'])) continue;
+
             $connection = [
                 'id' => $service['attributes']['id'],
                 'train_line' => [
-                    'type' => $service['tl']['attributes']['c'],
-                    'number' => $service['tl']['attributes']['n'],
-                    'operator' => $service['tl']['attributes']['o']
-                ]
+                    'type' => $service['tl']['attributes']['c'] ?? '',
+                    'number' => $service['tl']['attributes']['n'] ?? '',
+                    'operator' => $service['tl']['attributes']['o'] ?? ''
+                ],
+                'changes' => $changesMap[$service['attributes']['id']] ?? []
             ];
 
             // Check for arrival
-            if (isset($service['ar'])) {
+            if (isset($service['ar']) && isset($service['ar']['attributes'])) {
                 $connection['arrival'] = [
-                    'platform' => $service['ar']['attributes']['pp'],
-                    'time' => $service['ar']['attributes']['pt'],
-                    'line' => $service['ar']['attributes']['l'],
-                    'route_before' => explode('|', $service['ar']['attributes']['ppth'])
+                    'platform' => $service['ar']['attributes']['pp'] ?? '',
+                    'time' => $service['ar']['attributes']['pt'] ?? '',
+                    'line' => $service['ar']['attributes']['l'] ?? '',
+                    'route_before' => isset($service['ar']['attributes']['ppth']) ?
+                        explode('|', $service['ar']['attributes']['ppth']) : []
                 ];
             }
 
             // Check for departure
-            if (isset($service['dp'])) {
+            if (isset($service['dp']) && isset($service['dp']['attributes'])) {
                 $connection['departure'] = [
-                    'platform' => $service['dp']['attributes']['pp'],
-                    'time' => $service['dp']['attributes']['pt'],
-                    'line' => $service['dp']['attributes']['l'],
-                    'route_after' => explode('|', $service['dp']['attributes']['ppth'])
+                    'platform' => $service['dp']['attributes']['pp'] ?? '',
+                    'time' => $service['dp']['attributes']['pt'] ?? '',
+                    'line' => $service['dp']['attributes']['l'] ?? '',
+                    'route_after' => isset($service['dp']['attributes']['ppth']) ?
+                        explode('|', $service['dp']['attributes']['ppth']) : []
                 ];
             }
 
@@ -157,10 +203,11 @@ if ($timetable) {
                     <th>Zug</th>
                     <th>Gleis Ankunft</th>
                     <th>Zeit Ankunft</th>
-                    <th>Route vor der Ankunft in <?php echo htmlspecialchars($station); ?></th>
+                    <th>Von</th>
                     <th>Gleis Abfahrt</th>
                     <th>Zeit Abfahrt</th>
-                    <th>Route nach der Abfahrt in <?php echo htmlspecialchars($station); ?></th>
+                    <th>Nach</th>
+                    <th>Änderungen</th>
                 </tr>
             </thead>
             <tbody>
@@ -183,7 +230,9 @@ if ($timetable) {
                         <td>
                             <?php if (isset($connection['arrival']['route_before'])): ?>
                                 <div class="route text-truncate">
-                                    <?php echo htmlspecialchars(implode(' → ', $connection['arrival']['route_before'])); ?>
+                                    <?php echo htmlspecialchars(reset($connection['arrival']['route_before'])); ?>
+                                    <?php //echo htmlspecialchars(implode(' → ', $connection['arrival']['route_before'])); 
+                                    ?>
                                 </div>
                             <?php endif; ?>
                         </td>
@@ -199,8 +248,30 @@ if ($timetable) {
                         <td>
                             <?php if (isset($connection['departure']['route_after'])): ?>
                                 <div class="route text-truncate">
-                                    <?php echo htmlspecialchars(implode(' → ', $connection['departure']['route_after'])); ?>
+                                    <?php echo htmlspecialchars(end($connection['departure']['route_after'])); ?>
+                                    <?php // echo htmlspecialchars(implode(' → ', $connection['departure']['route_after'])); 
+                                    ?>
                                 </div>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if (!empty($connection['changes'])): ?>
+                                <?php foreach ($connection['changes'] as $change): ?>
+                                    <div class="change">
+                                        <?php if (!empty($change['category'])): ?>
+                                            <strong><?php echo htmlspecialchars($change['category']); ?>:</strong>
+                                        <?php endif; ?>
+                                        <?php
+                                        if (!empty($change['from']) && !empty($change['to'])) {
+                                            $fromTime = substr($change['from'], -4, 2) . ':' . substr($change['from'], -2);
+                                            $toTime = substr($change['to'], -4, 2) . ':' . substr($change['to'], -2);
+                                            echo "Von $fromTime bis $toTime";
+                                        }
+                                        ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                Keine Änderungen
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -236,7 +307,7 @@ if ($timetable) {
                                 echo $facilityType;
                                 ?>
                             </td>
-                            <td><?php echo htmlspecialchars($facility['description']); ?></td>
+                            <td><?php echo isset($facility['description']) ? htmlspecialchars($facility['description']) : ''; ?></td>
                             <td>
                                 <?php
                                 // Color code the state
@@ -266,86 +337,15 @@ if ($timetable) {
         </div>
     <?php endif; ?>
 
+    <iframe
+        width="100%"
+        height="500"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=<?php echo ($longitude - 0.01); ?>,<?php echo ($latitude - 0.01); ?>,<?php echo ($longitude + 0.01); ?>,<?php echo ($latitude + 0.01); ?>&layer=mapnik"
+        style="border: 1px solid black">
+    </iframe>
+
     <!-- Der Footer -->
-
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2024 StationSync. Alle Rechte vorbehalten.</p>
-            <div>
-                <button type="button" class="btn btn-link text-light" data-bs-toggle="modal" data-bs-target="#haftungsausschluss-modal">Haftungsausschluss</button>
-                <button type="button" class="btn btn-link text-light" data-bs-toggle="modal" data-bs-target="#datenschutz-modal">Datenschutz</button>
-                <button type="button" class="btn btn-link text-light" data-bs-toggle="modal" data-bs-target="#kontakt-modal">Kontakt</button>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Festlegen der Daten die Bei den Buttons vom Footer geöffnet werden (erst Kontakt dann Haftungsausschluss und zuletzt Datenschutz) -->
-    <div class="modal fade" id="kontakt-modal" tabindex="-1" role="dialog" aria-labelledby="kontakt-modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="kontakt-modal-label">Kontakt</h5>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Für Fragen oder Anliegen wenden Sie sich bitte an unseren
-                        <a href="pages/contact.html">Kontakt</a>.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="haftungsausschluss-modal" tabindex="-1" role="dialog"
-        aria-labelledby="haftungsausschluss-modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="haftungsausschluss-modal-label">Haftungsausschluss</h5>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Die auf dieser Website bereitgestellten Informationen und Dienstleistungen werden ohne
-                        Gewährleistung für Richtigkeit, Vollständigkeit oder Aktualität bereitgestellt.
-                        Wir übernehmen keine Haftung für Verzögerungen oder Ausfälle von Bahnverbindungen, die aufgrund
-                        von Umständen außerhalb unserer Kontrolle entstehen.
-                        Bitte beachten Sie, dass die Ankunfts- und Abfahrtszeiten von Zügen je nach Verkehrslage
-                        variieren können.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="datenschutz-modal" tabindex="-1" role="dialog" aria-labelledby="datenschutz-modal-label"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="datenschutz-modal-label">Datenschutz</h5>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Wir nehmen den Schutz Ihrer persönlichen Daten ernst. Bitte lesen Sie unsere
-                        <a href="pages/datenschutz.html">Datenschutzerklärung</a>, um mehr über die Verarbeitung und den
-                        Schutz Ihrer Daten zu erfahren.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <?php include '../components/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
