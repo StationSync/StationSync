@@ -51,3 +51,9 @@ footer {
 	color: var(--bs-light);
 	margin-top: auto;
 }
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    margin-top: 10px;
+}

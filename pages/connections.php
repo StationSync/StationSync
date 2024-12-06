@@ -173,6 +173,19 @@ if ($timetable) {
 </head>
 
 <body>
+
+    <div id="loadingContainer" class="container text-center my-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Verbindungen werden geladen...</p>
+    </div>
+
+    <!-- Hide this container when content is loaded -->
+    <div id="connectionsContent" class="d-none">
+        <!-- Your existing connections content -->
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="#"><i class="fas fa-train me-2"></i>StationSync</a>
@@ -378,6 +391,17 @@ if ($timetable) {
     <?php include '../components/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // When page loads, simulate loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading (remove this in production)
+            setTimeout(function() {
+                document.getElementById('loadingContainer').classList.add('d-none');
+                document.getElementById('connectionsContent').classList.remove('d-none');
+            }, 1500); // 1.5 seconds loading time
+        });
+    </script>
 
 </body>
 

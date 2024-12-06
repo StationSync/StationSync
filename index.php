@@ -126,6 +126,11 @@ foreach ($stationsArray['result'] as $station) {
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg w-100"><i class="fas fa-search me-2"></i>Bahnverbindung suchen</button>
                         </form>
+                        <div id="loadingSpinner" class="text-center d-none">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -180,6 +185,21 @@ foreach ($stationsArray['result'] as $station) {
                     console.log('Selected Station:', selectedStation.name);
                 }
             }
+        });
+    </script>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Get the submit button and loading spinner
+            const submitButton = document.querySelector('button[type="submit"]');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Disable the button and show the spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Suchen...';
+
+            // Optionally, show the spinner div if you want a larger spinner
+            // loadingSpinner.classList.remove('d-none');
         });
     </script>
 
