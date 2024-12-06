@@ -6,8 +6,16 @@ $evaNumber = $_GET['evaNumber'];
 $date = $_GET['datum'];
 $time = $_GET['uhrzeit'];
 $number = $_GET['number'];
-$longitude = 6.766979;
-$latitude = 51.278517;
+
+$coords = $_GET['coords'];
+$coordParts = explode(',', $coords);
+$longitude = $coordParts[0];
+$latitude = $coordParts[1];
+
+$zipcode = $_GET['zipcode'];
+$city = $_GET['city'];
+$street = $_GET['street'];
+
 
 $formattedDate = date('ymd', strtotime($date));
 $hour = date('H', strtotime($time));
@@ -148,16 +156,18 @@ if ($timetable) {
             white-space: pre-wrap;
             font-family: monospace;
         }
+
         body {
-        	display: flex;
-        	flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
+
         footer {
-        	width:100%;
-        	height: 140px;
-        	background-color: var(--bs-secondary);
-        	color: var(--bs-light);
-        	margin-top: auto;
+            width: 100%;
+            height: 140px;
+            background-color: var(--bs-secondary);
+            color: var(--bs-light);
+            margin-top: auto;
         }
     </style>
 </head>
@@ -349,11 +359,20 @@ if ($timetable) {
     <?php endif; ?>
 
     <iframe
-        width="100%"
-        height="500"
+        width="25%"
+        height="250"
         src="https://www.openstreetmap.org/export/embed.html?bbox=<?php echo ($longitude - 0.01); ?>,<?php echo ($latitude - 0.01); ?>,<?php echo ($longitude + 0.01); ?>,<?php echo ($latitude + 0.01); ?>&layer=mapnik"
         style="border: 1px solid black">
     </iframe>
+
+    <div class="card" style="width: 25%; float: right; margin-left: 20px;">
+        <div class="card-body">
+            <h5 class="card-title">Informationen</h5>
+            <p class="card-text"><strong>Postleitzahl:</strong> <?php echo htmlspecialchars($zipcode); ?></p>
+            <p class="card-text"><strong>Stadt:</strong> <?php echo htmlspecialchars($city); ?></p>
+            <p class="card-text"><strong>Straße:</strong> <?php echo htmlspecialchars($street); ?></p>
+        </div>
+    </div>
 
     <!-- Der Footer -->
     <?php include '../components/footer.php'; ?>

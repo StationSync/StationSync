@@ -31,10 +31,20 @@ foreach ($stationsArray['result'] as $station) {
         // Get the first EVA number (assuming the first one is the main number)
         $evaNumber = $station['evaNumbers'][0]['number'];
 
+        // Add a check for geographicCoordinates
+        $coords = null;
+        if (isset($station['ril100Identifiers'][0]['geographicCoordinates']['coordinates'])) {
+            $coords = $station['ril100Identifiers'][0]['geographicCoordinates']['coordinates'];
+        }
+
         $stationData[] = [
             'name' => $station['name'],
             'evaNumber' => $evaNumber,
-            'number' => $station['number']
+            'number' => $station['number'],
+            'zipcode' => $station['mailingAddress']['zipcode'],
+            'city' => $station['mailingAddress']['city'],
+            'street' => $station['mailingAddress']['street'],
+            'coords' => $coords
         ];
     }
 }
@@ -87,6 +97,10 @@ foreach ($stationsArray['result'] as $station) {
                             </div>
                             <input type="hidden" id="evaNumber" name="evaNumber" value="">
                             <input type="hidden" id="number" name="number" value="">
+                            <input type="hidden" id="zipcode" name="zipcode" value="">
+                            <input type="hidden" id="city" name="city" value="">
+                            <input type="hidden" id="street" name="street" value="">
+                            <input type="hidden" id="coords" name="coords" value="">
                             <div class="mb-3">
                                 <label for="trainStation2" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Ziel-Bahnhof (optional)</label>
                                 <input type="text" id="trainStation2" name="trainStation2"
@@ -131,6 +145,10 @@ foreach ($stationsArray['result'] as $station) {
         const input = document.getElementById('trainStation');
         const evaInput = document.getElementById('evaNumber'); // Get the EVA number input
         const numberInput = document.getElementById('number'); // Get the EVA number input
+        const zipcodeInput = document.getElementById('zipcode'); // Get the EVA number input
+        const cityInput = document.getElementById('city'); // Get the EVA number input
+        const streetInput = document.getElementById('street'); // Get the EVA number input
+        const coordsInput = document.getElementById('coords'); // Get the EVA number input
         const autocomplete = new AutocompleteInput(input, {
             data: stations,
             placeholder: 'Nach Bahnhof suchen...',
@@ -143,6 +161,10 @@ foreach ($stationsArray['result'] as $station) {
                     console.log('Number:', selectedStation.number);
                     evaInput.value = selectedStation.evaNumber; // Set the EVA number in the hidden input
                     numberInput.value = selectedStation.number; // Set the EVA number in the hidden input
+                    zipcodeInput.value = selectedStation.zipcode; // Set the EVA number in the hidden input
+                    cityInput.value = selectedStation.city; // Set the EVA number in the hidden input
+                    streetInput.value = selectedStation.street; // Set the EVA number in the hidden input
+                    coordsInput.value = selectedStation.coords; // Set the EVA number in the hidden input
                 }
             }
         });
