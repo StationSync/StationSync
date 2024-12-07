@@ -61,24 +61,74 @@ if ($timetable) {
             if (!isset($service['attributes']['id'])) continue;
 
             $serviceId = $service['attributes']['id'];
+            $changesMap[$serviceId] = [];
 
-            // Check if messages exist
-            if (isset($service['m'])) {
-                // Ensure messages is an array
-                $messages = is_array($service['m']) ? $service['m'] : [$service['m']];
+            // Check for arrival changes
+            if (isset($service['ar']) && isset($service['ar']['attributes'])) {
+                $arrivalAttributes = $service['ar']['attributes'];
 
-                foreach ($messages as $message) {
-                    // Check if message has the required attributes
-                    if (!isset($message['attributes'])) continue;
-
+                // In the changes mapping section, modify the date formatting
+                if (isset($arrivalAttributes['ct'])) {
                     $changesMap[$serviceId][] = [
-                        'type' => $message['attributes']['t'] ?? '',
-                        'category' => $message['attributes']['cat'] ?? '',
-                        'from' => $message['attributes']['from'] ?? '',
-                        'to' => $message['attributes']['to'] ?? ''
+                        'type' => 'Arrival Time',
+                        'category' => $arrivalAttributes['ct'] ?? '',
+                        'details' => $arrivalAttributes['cp'] ?? '',
+                        'originalTime' => isset($arrivalAttributes['pt']) ?
+                            substr($arrivalAttributes['pt'], -4, 2) . ':' . substr($arrivalAttributes['pt'], -2) : ''
+                    ];
+                }
+
+                if (isset($arrivalAttributes['cs'])) {
+                    $changesMap[$serviceId][] = [
+                        'type' => 'Arrival Status',
+                        'category' => $arrivalAttributes['cs'] ?? '',
+                        'details' => $arrivalAttributes['cp'] ?? ''
+                    ];
+                }
+
+                if (isset($arrivalAttributes['cpth'])) {
+                    $changesMap[$serviceId][] = [
+                        'type' => 'Arrival Route',
+                        'category' => 'Route Change',
+                        'details' => $arrivalAttributes['cpth'] ?? ''
                     ];
                 }
             }
+
+            // Check for departure changes
+            if (isset($service['dp']) && isset($service['dp']['attributes'])) {
+                $departureAttributes = $service['dp']['attributes'];
+
+                // Similarly for departure
+                if (isset($departureAttributes['ct'])) {
+                    $changesMap[$serviceId][] = [
+                        'type' => 'Departure Time',
+                        'category' => $departureAttributes['ct'] ?? '',
+                        'details' => $departureAttributes['cp'] ?? '',
+                        'originalTime' => isset($departureAttributes['pt']) ?
+                            substr($departureAttributes['pt'], -4, 2) . ':' . substr($departureAttributes['pt'], -2) : ''
+                    ];
+                }
+
+                if (isset($departureAttributes['cs'])) {
+                    $changesMap[$serviceId][] = [
+                        'type' => 'Departure Status',
+                        'category' => $departureAttributes['cs'] ?? '',
+                        'details' => $departureAttributes['cp'] ?? ''
+                    ];
+                }
+
+                if (isset($departureAttributes['cpth'])) {
+                    $changesMap[$serviceId][] = [
+                        'type' => 'Departure Route',
+                        'category' => 'Route Change',
+                        'details' => $departureAttributes['cpth'] ?? ''
+                    ];
+                }
+            }
+
+            // Remove empty change entries
+            $changesMap[$serviceId] = array_filter($changesMap[$serviceId]);
         }
     }
 
@@ -241,7 +291,6 @@ if ($timetable) {
                     <th>Gleis Abfahrt</th>
                     <th>Zeit Abfahrt</th>
                     <th>Nach</th>
-                    <th>Änderungen</th>
                 </tr>
             </thead>
             <tbody>
@@ -255,57 +304,106 @@ if ($timetable) {
 
                         <!-- Arrival Information -->
                         <td>
-                            <?php echo isset($connection['arrival']['platform']) ?
-                                htmlspecialchars($connection['arrival']['platform']) : ''; ?>
+                            <?php
+                            $arrivalPlatform = isset($connection['arrival']['platform']) ?
+                                htmlspecialchars($connection['arrival']['platform']) : '';
+
+                            // Check for platform changes
+                            $platformChange = array_filter($connection['changes'], function ($change) {
+                                return strpos($change['type'], 'Platform') !== false;
+                            });
+
+                            if (!empty($platformChange)) {
+                                echo '<span class="text-decoration-line-through">' . $arrivalPlatform . '</span> ';
+                                echo '<span class="text-danger">' . htmlspecialchars(end($platformChange)['details']) . '</span>';
+                            } else {
+                                echo $arrivalPlatform;
+                            }
+                            ?>
                         </td>
                         <td>
-                            <?php echo isset($connection['arrival']['time']) ?
-                                htmlspecialchars(substr($connection['arrival']['time'], -4, 2) . ':' . substr($connection['arrival']['time'], -2)) : ''; ?></td>
+                            <?php
+                            $arrivalTime = isset($connection['arrival']['time']) ?
+                                htmlspecialchars(substr($connection['arrival']['time'], -4, 2) . ':' . substr($connection['arrival']['time'], -2)) : '';
+
+                            // Check for time changes
+                            $timeChange = array_filter($connection['changes'], function ($change) {
+                                return $change['type'] === 'Arrival Time';
+                            });
+
+                            if (!empty($timeChange)) {
+                                $change = end($timeChange);
+                                if ($change['category'] > $connection['arrival']['time']) {
+                                    $originalTimeFormatted = date('H:i', strtotime(substr($change['originalTime'], 0, 4) . '-' . substr($change['originalTime'], 4, 2) . '-' . substr($change['originalTime'], 6, 2) . ' ' . substr($change['originalTime'], -4)));
+                                    echo '<span class="text-decoration-line-through">' . $arrivalTime . '</span> ';
+                                    echo '<span class="text-danger">' . htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2)) . '</span>';
+                                    //echo htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2));
+                                } else {
+                                    echo '<span">' . $arrivalTime . '</span> ';
+                                }
+                            } else {
+                                echo $arrivalTime;
+                            }
+                            ?>
+                        </td>
                         <td>
                             <?php if (isset($connection['arrival']['route_before'])): ?>
                                 <div class="route text-truncate">
                                     <?php echo htmlspecialchars(reset($connection['arrival']['route_before'])); ?>
-                                    <?php //echo htmlspecialchars(implode(' → ', $connection['arrival']['route_before'])); 
-                                    ?>
                                 </div>
                             <?php endif; ?>
                         </td>
 
                         <!-- Departure Information -->
                         <td>
-                            <?php echo isset($connection['departure']['platform']) ?
-                                htmlspecialchars($connection['departure']['platform']) : ''; ?>
+                            <?php
+                            $departurePlatform = isset($connection['departure']['platform']) ?
+                                htmlspecialchars($connection['departure']['platform']) : '';
+
+                            // Check for platform changes
+                            $platformChange = array_filter($connection['changes'], function ($change) {
+                                return strpos($change['type'], 'Platform') !== false;
+                            });
+
+                            if (!empty($platformChange)) {
+                                echo '<span class="text-decoration-line-through">' . $departurePlatform . '</span> ';
+                                echo '<span class="text-danger">' . htmlspecialchars(end($platformChange)['details']) . '</span>';
+                            } else {
+                                echo $departurePlatform;
+                            }
+                            ?>
                         </td>
                         <td>
-                            <?php echo isset($connection['departure']['time']) ?
-                                htmlspecialchars(substr($connection['departure']['time'], -4, 2) . ':' . substr($connection['departure']['time'], -2)) : ''; ?></td>
+                            <?php
+                            $departureTime = isset($connection['departure']['time']) ?
+                                htmlspecialchars(substr($connection['departure']['time'], -4, 2) . ':' . substr($connection['departure']['time'], -2)) : '';
+
+                            // Check for time changes
+                            $timeChange = array_filter($connection['changes'], function ($change) {
+                                return $change['type'] === 'Departure Time';
+                            });
+
+                            if (!empty($timeChange)) {
+                                $change = end($timeChange);
+                                if ($change['category'] > $connection['departure']['time']) {
+                                    $originalTimeFormatted = date('H:i', strtotime(substr($change['originalTime'], 0, 4) . '-' . substr($change['originalTime'], 4, 2) . '-' . substr($change['originalTime'], 6, 2) . ' ' . substr($change['originalTime'], -4)));
+                                    echo '<span class="text-decoration-line-through">' . $departureTime . '</span> ';
+                                    echo '<span class="text-danger">' . htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2)) . '</span>';
+                                    //echo htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2));
+                                } else {
+                                    echo '<span">' . $departureTime . '</span> ';
+                                }
+                            } else {
+                                echo $departureTime;
+                            }
+
+                            ?>
+                        </td>
                         <td>
                             <?php if (isset($connection['departure']['route_after'])): ?>
                                 <div class="route text-truncate">
                                     <?php echo htmlspecialchars(end($connection['departure']['route_after'])); ?>
-                                    <?php // echo htmlspecialchars(implode(' → ', $connection['departure']['route_after'])); 
-                                    ?>
                                 </div>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php if (!empty($connection['changes'])): ?>
-                                <?php foreach ($connection['changes'] as $change): ?>
-                                    <div class="change">
-                                        <?php if (!empty($change['category'])): ?>
-                                            <strong><?php echo htmlspecialchars($change['category']); ?>:</strong>
-                                        <?php endif; ?>
-                                        <?php
-                                        if (!empty($change['from']) && !empty($change['to'])) {
-                                            $fromTime = substr($change['from'], -4, 2) . ':' . substr($change['from'], -2);
-                                            $toTime = substr($change['to'], -4, 2) . ':' . substr($change['to'], -2);
-                                            echo "Von $fromTime bis $toTime";
-                                        }
-                                        ?>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                Keine Änderungen
                             <?php endif; ?>
                         </td>
                     </tr>
