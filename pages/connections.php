@@ -1,5 +1,5 @@
 <?php
-
+// Initalisieren der Daten
 $station =  $_GET['trainStation'];
 $station2 =  $_GET['trainStation2'];
 $evaNumber = $_GET['evaNumber'];
@@ -39,7 +39,7 @@ require_once '../api_routes/fasta_stations.php';
 require_once '../helper_functions/xmlToJson.php';
 require_once '../helper_functions/consoleLog.php';
 
-// Initialize connections array
+// Initialisiereb des connections array
 $connections = [];
 $errorMessage = '';
 $debugInfo = '';
@@ -48,7 +48,7 @@ $timetable = getTimetableByStation($evaNumber, $formattedDate, $hour);
 $facilities = getFacilitiesByStation($number);
 $changes = getChangesByStation($evaNumber);
 
-// If $facilities is a JSON string, decode it
+// Wenn $facilities ein JSON Text ist, wird es dekodiert 
 if (is_string($facilities)) {
     $facilities = json_decode($facilities, true);
 }
@@ -64,24 +64,24 @@ if ($timetable) {
     console_log($timetableJson);
     console_log($changesJson);
 
-    // Create a mapping of changes by service ID
+    // Erstellt ein Mapping von Veränderung nach der Service ID 
     $changesMap = [];
     if (isset($changesData['s'])) {
-        // Ensure $changesData['s'] is an array
+        // Sicherstellen das $changesData['s'] ein Array ist
         $changesServices = is_array($changesData['s']) ? $changesData['s'] : [$changesData['s']];
 
         foreach ($changesServices as $service) {
-            // Check if service has the necessary attributes
+            // Überprüfen ob der Service die benötigten Attribute besitzt 
             if (!isset($service['attributes']['id'])) continue;
 
             $serviceId = $service['attributes']['id'];
             $changesMap[$serviceId] = [];
 
-            // Check for arrival changes
+            // Überprüfen der Änderungen der Ankunft 
             if (isset($service['ar']) && isset($service['ar']['attributes'])) {
                 $arrivalAttributes = $service['ar']['attributes'];
 
-                // In the changes mapping section, modify the date formatting
+                // Ändern des im Abschnitt „Änderungszuordnung“ der Datumsformatierung
                 if (isset($arrivalAttributes['ct'])) {
                     $changesMap[$serviceId][] = [
                         'type' => 'Arrival Time',
@@ -109,11 +109,11 @@ if ($timetable) {
                 }
             }
 
-            // Check for departure changes
+            // Überprüfen der Abfahrt Änderungen
             if (isset($service['dp']) && isset($service['dp']['attributes'])) {
                 $departureAttributes = $service['dp']['attributes'];
 
-                // Similarly for departure
+                
                 if (isset($departureAttributes['ct'])) {
                     $changesMap[$serviceId][] = [
                         'type' => 'Departure Time',
@@ -141,22 +141,22 @@ if ($timetable) {
                 }
             }
 
-            // Remove empty change entries
+            // Entfernen von leeren Änderungen
             $changesMap[$serviceId] = array_filter($changesMap[$serviceId]);
         }
     }
 
-    // Check if timetable is empty or false
+    // Überprüfen ob der Zeitplan leer ist oder falsch
     if ($timetableData === null) {
         $errorMessage = "Failed to parse timetable JSON.";
     } else {
-        // Modify connections parsing
+        // Verändern des connections parsing
         $connections = [];
-        // Ensure $timetableData['s'] is an array
+        // Sicherstellen das $timetableData['s'] ein Array ist
         $services = is_array($timetableData['s']) ? $timetableData['s'] : [$timetableData['s']];
 
         foreach ($services as $service) {
-            // Skip if service doesn't have attributes
+            // Überspringen wenn der Service keine Attribute hat 
             if (!isset($service['attributes']['id'])) continue;
 
             $connection = [
@@ -169,7 +169,7 @@ if ($timetable) {
                 'changes' => $changesMap[$service['attributes']['id']] ?? []
             ];
 
-            // Check for arrival
+            // überprüfen der Ankunft
             if (isset($service['ar']) && isset($service['ar']['attributes'])) {
                 $connection['arrival'] = [
                     'platform' => $service['ar']['attributes']['pp'] ?? '',
@@ -180,7 +180,7 @@ if ($timetable) {
                 ];
             }
 
-            // Check for departure
+            // Überprüfen der Abfahrt
             if (isset($service['dp']) && isset($service['dp']['attributes'])) {
                 $connection['departure'] = [
                     'platform' => $service['dp']['attributes']['pp'] ?? '',
@@ -194,7 +194,7 @@ if ($timetable) {
             $connections[] = $connection;
         }
 
-        // Check if no connections were found
+        // Überprüfen ob keine Verbindungen gefunden wurden 
         if (empty($connections)) {
             $errorMessage = "No connections found for this station and time.";
         }
@@ -211,7 +211,7 @@ if ($timetable) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        /* ... previous styles ... */
+        /* ... Vorheriger Style ... */
         .debug {
             background-color: #f0f0f0;
             border: 1px solid #ccc;
@@ -262,9 +262,9 @@ if ($timetable) {
     </div>
 </div>
 <main class="flex-grow-1">
-    <!-- Hide this container when content is loaded -->
+    <!-- Verstecken des Containers wenn der Inhlat lädt -->
     <div id="connectionsContent" class="d-none">
-        <!-- Your existing connections content -->
+        <!-- Die vorhandenen Verbindungsinhalte -->
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -297,9 +297,9 @@ if ($timetable) {
     <?php
     if (!empty($station2)) {
         $connections = array_filter($connections, function ($connection) use ($station2) {
-            // Check if departure route_after exists
+            // Überprüfen ob „departure route_after“ existiert
             if (isset($connection['departure']['route_after'])) {
-                // Check if $station2 is in the route_after OR if any route_after station is in $station2
+                // Überprüfen ob sich $station2 in „route_after“ befindet oder ob sich eine Route_after-Station in „$station2“ befindet
                 return in_array($station2, $connection['departure']['route_after']) ||
                     array_reduce($connection['departure']['route_after'], function ($carry, $routeStation) use ($station2) {
                         return $carry || stripos($station2, $routeStation) !== false ||
@@ -333,13 +333,13 @@ if ($timetable) {
                                 $connection['train_line']['operator'] . ')'); ?>
                         </td>
 
-                        <!-- Arrival Information -->
+                        <!-- Ankunfts Informationen -->
                         <td>
                             <?php
                             $arrivalPlatform = isset($connection['arrival']['platform']) ?
                                 htmlspecialchars($connection['arrival']['platform']) : '';
 
-                            // Check for platform changes
+                            // Überprüfung für Veränderung der Platformen
                             $platformChange = array_filter($connection['changes'], function ($change) {
                                 return strpos($change['type'], 'Platform') !== false;
                             });
@@ -357,7 +357,7 @@ if ($timetable) {
                             $arrivalTime = isset($connection['arrival']['time']) ?
                                 htmlspecialchars(substr($connection['arrival']['time'], -4, 2) . ':' . substr($connection['arrival']['time'], -2)) : '';
 
-                            // Check for time changes
+                            // Überprüfung nach änderungen der Zeit
                             $timeChange = array_filter($connection['changes'], function ($change) {
                                 return $change['type'] === 'Arrival Time';
                             });
@@ -368,7 +368,6 @@ if ($timetable) {
                                     $originalTimeFormatted = date('H:i', strtotime(substr($change['originalTime'], 0, 4) . '-' . substr($change['originalTime'], 4, 2) . '-' . substr($change['originalTime'], 6, 2) . ' ' . substr($change['originalTime'], -4)));
                                     echo '<span class="text-decoration-line-through">' . $arrivalTime . '</span> ';
                                     echo '<span class="text-danger">' . htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2)) . '</span>';
-                                    //echo htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2));
                                 } else {
                                     echo '<span">' . $arrivalTime . '</span> ';
                                 }
@@ -385,13 +384,13 @@ if ($timetable) {
                             <?php endif; ?>
                         </td>
 
-                        <!-- Departure Information -->
+                        <!-- Abfahrts Informationen -->
                         <td>
                             <?php
                             $departurePlatform = isset($connection['departure']['platform']) ?
                                 htmlspecialchars($connection['departure']['platform']) : '';
 
-                            // Check for platform changes
+                            // Überprüfung für Veränderung der Platformen
                             $platformChange = array_filter($connection['changes'], function ($change) {
                                 return strpos($change['type'], 'Platform') !== false;
                             });
@@ -409,7 +408,7 @@ if ($timetable) {
                             $departureTime = isset($connection['departure']['time']) ?
                                 htmlspecialchars(substr($connection['departure']['time'], -4, 2) . ':' . substr($connection['departure']['time'], -2)) : '';
 
-                            // Check for time changes
+                            // Überprüfung nach änderungen der Zeit
                             $timeChange = array_filter($connection['changes'], function ($change) {
                                 return $change['type'] === 'Departure Time';
                             });
@@ -420,7 +419,6 @@ if ($timetable) {
                                     $originalTimeFormatted = date('H:i', strtotime(substr($change['originalTime'], 0, 4) . '-' . substr($change['originalTime'], 4, 2) . '-' . substr($change['originalTime'], 6, 2) . ' ' . substr($change['originalTime'], -4)));
                                     echo '<span class="text-decoration-line-through">' . $departureTime . '</span> ';
                                     echo '<span class="text-danger">' . htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2)) . '</span>';
-                                    //echo htmlspecialchars(substr($change['category'], -4, 2) . ':' . substr($change['category'], -2));
                                 } else {
                                     echo '<span">' . $departureTime . '</span> ';
                                 }
@@ -470,7 +468,7 @@ if ($timetable) {
                         <tr>
                             <td>
                                 <?php
-                                // Translate facility type if needed
+                                // Übersetzen der Einrichtungstypen wenn benötigt
                                 $facilityType = match ($facility['type']) {
                                     'ELEVATOR' => 'Aufzug',
                                     'ESCALATOR' => 'Rolltreppe',
@@ -482,7 +480,7 @@ if ($timetable) {
                             <td><?php echo isset($facility['description']) ? htmlspecialchars($facility['description']) : ''; ?></td>
                             <td>
                                 <?php
-                                // Color code the state
+                                // Den Status Färben
                                 $stateClass = match ($facility['state']) {
                                     'ACTIVE' => 'text-success',
                                     'INACTIVE' => 'text-danger',
@@ -491,7 +489,7 @@ if ($timetable) {
                                 ?>
                                 <span class="<?php echo $stateClass; ?>">
                                     <?php
-                                    // Translate state if needed
+                                    // Übersetzen des Status, wenn benötigt
                                     $stateText = match ($facility['state']) {
                                         'ACTIVE' => 'Verfügbar',
                                         'INACTIVE' => 'Nicht verfügbar',
@@ -588,13 +586,11 @@ if ($timetable) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // When page loads, simulate loading
         document.addEventListener('DOMContentLoaded', function() {
-            // Simulate loading (remove this in production)
             setTimeout(function() {
                 document.getElementById('loadingContainer').classList.add('d-none');
                 document.getElementById('connectionsContent').classList.remove('d-none');
-            }, 1500); // 1.5 seconds loading time
+            }, 1500); 
         });
         document.addEventListener('DOMContentLoaded', function() {
     var routeModal = document.getElementById('routeModal');
