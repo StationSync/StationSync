@@ -556,7 +556,7 @@ if ($timetable) {
             'Barrierefreier Zugang' => ['hasSteplessAccess', 'fa-wheelchair'],
             'WiFi' => ['hasWiFi', 'fa-wifi'],
             'Reisezentrum' => ['hasTravelCenter', 'fa-info-circle'],
-            'Eisenbahnmision' => ['hasRailwayMission', 'fa-cross'],
+            'Eisenbahnmission' => ['hasRailwayMission', 'fa-cross'],
             'DB Lounge' => ['hasDBLounge', 'fa-couch'],
             'Fundbüro' => ['hasLostAndFound', 'fa-box-open'],
             'Autovermietung' => ['hasCarRental', 'fa-car']
