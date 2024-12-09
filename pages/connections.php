@@ -219,6 +219,21 @@ if ($timetable) {
             color: var(--bs-light);
             margin-top: auto;
         }
+
+        .route-clickable {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.route-clickable:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.route-clickable:hover i {
+    color: primary !important;
+}
     </style>
 </head>
 
@@ -401,12 +416,21 @@ if ($timetable) {
                             ?>
                         </td>
                         <td>
-                            <?php if (isset($connection['departure']['route_after'])): ?>
-                                <div class="route text-truncate">
-                                    <?php echo htmlspecialchars(end($connection['departure']['route_after'])); ?>
-                                </div>
-                            <?php endif; ?>
-                        </td>
+    <?php if (isset($connection['departure']['route_after'])): ?>
+        <?php
+        $routes = $connection['departure']['route_after'];
+        $endStation = end($routes);
+        $allStations = implode('->', $routes);
+        ?>
+        <div class="route text-truncate route-clickable" 
+             data-bs-toggle="modal" 
+             data-bs-target="#routeModal" 
+             data-stations="<?php echo htmlspecialchars($allStations); ?>">
+            <?php echo htmlspecialchars($endStation); ?>
+            <i class="fas fa-route text-muted ms-2" data-bs-toggle="tooltip" title="Alle Stationen anzeigen"></i>
+        </div>
+    <?php endif; ?>
+</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -471,7 +495,26 @@ if ($timetable) {
     <?php endif; ?>
     </main>
 
-    <div class="card mb-3">
+<!-- Route Modal -->
+<div class="modal fade" id="routeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-map-marked-alt me-2"></i>Stationsroute
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="stationsList" class="list-group">
+                    <!-- Stationen werden hier dynamisch eingefügt -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-6">
       <iframe
@@ -491,6 +534,7 @@ if ($timetable) {
     </div>
   </div>
 </div>
+
     <!-- Der Footer -->
     <?php include '../components/footer.php'; ?>
 
@@ -505,6 +549,46 @@ if ($timetable) {
                 document.getElementById('connectionsContent').classList.remove('d-none');
             }, 1500); // 1.5 seconds loading time
         });
+        document.addEventListener('DOMContentLoaded', function() {
+    var routeModal = document.getElementById('routeModal');
+    routeModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var stations = button.getAttribute('data-stations').split('->');
+        var stationsList = document.getElementById('stationsList');
+        stationsList.innerHTML = '';
+        
+        stations.forEach(function(station, index) {
+            var li = document.createElement('li');
+            li.className = 'list-group-item d-flex align-items-center';
+            
+            // Letztes Element anders stylen
+            if (index === stations.length - 1) {
+                li.innerHTML = `
+                    <i class="fas fa-flag-checkered text-success me-2"></i>
+                    <strong>${station}</strong>
+                `;
+            } else if (index === 0) {
+                li.innerHTML = `
+                    <i class="fas fa-play text-primary me-2"></i>
+                    ${station}
+                `;
+            } else {
+                li.innerHTML = `
+                    <i class="fas fa-map-marker-alt text-muted me-2"></i>
+                    ${station}
+                `;
+            }
+            
+            stationsList.appendChild(li);
+        });
+    });
+
+    // Tooltips aktivieren
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
     </script>
 
 </body>
