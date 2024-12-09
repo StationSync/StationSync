@@ -27,12 +27,12 @@ $stationData = []; // StationsDaten Array
 
 // Loop auf alle Stationen 
 foreach ($stationsArray['result'] as $station) {
-    // Check if evaNumbers exist and is not empty
+    // Überprüfen ob die EVA Nummer existiert und nicht leer ist 
     if (!empty($station['evaNumbers'])) {
-        // Get the first EVA number (assuming the first one is the main number)
+        // Holen der erste Eva Nummer (Ausgehend davon das die erste auch die Haupt Nummer ist)
         $evaNumber = $station['evaNumbers'][0]['number'];
 
-        // Add a check for geographicCoordinates
+        // Hinzufügen eines checks für die Geografischen Koordinaten
         $coords = null;
         $hasSteplessAccess = null;
 
@@ -177,18 +177,18 @@ foreach ($stationsArray['result'] as $station) {
 
     <script src="components/autocomplete.js"></script>
     <script>
-        // Train stations autocomplete
+        // Stationen automatische Vervollständigung
         const stations = <?php echo json_encode(array_column($stationData, 'name')); ?>;
         const stationData = <?php echo json_encode($stationData); ?>;
 
-        // Initialize the autocomplete
+        // Initalisieren der automatische Vervollständigung 
         const input = document.getElementById('trainStation');
-        const evaInput = document.getElementById('evaNumber'); // Get the EVA number input
-        const numberInput = document.getElementById('number'); // Get the EVA number input
-        const zipcodeInput = document.getElementById('zipcode'); // Get the EVA number input
-        const cityInput = document.getElementById('city'); // Get the EVA number input
-        const streetInput = document.getElementById('street'); // Get the EVA number input
-        const coordsInput = document.getElementById('coords'); // Get the EVA number input
+        const evaInput = document.getElementById('evaNumber'); 
+        const numberInput = document.getElementById('number'); 
+        const zipcodeInput = document.getElementById('zipcode'); 
+        const cityInput = document.getElementById('city'); 
+        const streetInput = document.getElementById('street'); 
+        const coordsInput = document.getElementById('coords'); 
         const hasParkingInput = document.getElementById('hasParking');
         const hasBicycleParkingInput = document.getElementById('hasBicycleParking');
         const hasLocalPublicTransportInput = document.getElementById('hasLocalPublicTransport');
@@ -208,18 +208,18 @@ foreach ($stationsArray['result'] as $station) {
             data: stations,
             placeholder: 'Nach Bahnhof suchen...',
             onSelect: (selectedItem) => {
-                // Find the corresponding EVA number
+                // Finden der Korespondierenden EVA Nummer
                 const selectedStation = stationData.find(station => station.name === selectedItem);
                 if (selectedStation) {
                     console.log('Selected Station:', selectedStation.name);
                     console.log('EVA Number:', selectedStation.evaNumber);
                     console.log('Number:', selectedStation.number);
-                    evaInput.value = selectedStation.evaNumber; // Set the EVA number in the hidden input
-                    numberInput.value = selectedStation.number; // Set the EVA number in the hidden input
-                    zipcodeInput.value = selectedStation.zipcode; // Set the EVA number in the hidden input
-                    cityInput.value = selectedStation.city; // Set the EVA number in the hidden input
-                    streetInput.value = selectedStation.street; // Set the EVA number in the hidden input
-                    coordsInput.value = selectedStation.coords; // Set the EVA number in the hidden input
+                    evaInput.value = selectedStation.evaNumber; 
+                    numberInput.value = selectedStation.number; 
+                    zipcodeInput.value = selectedStation.zipcode; 
+                    cityInput.value = selectedStation.city; 
+                    streetInput.value = selectedStation.street; 
+                    coordsInput.value = selectedStation.coords; 
                     hasParkingInput.value = selectedStation.hasParking;
                     hasBicycleParkingInput.value = selectedStation.hasBicycleParking;
                     hasLocalPublicTransportInput.value = selectedStation.hasLocalPublicTransport;
@@ -243,7 +243,7 @@ foreach ($stationsArray['result'] as $station) {
             data: stations,
             placeholder: 'Nach Bahnhof suchen...',
             onSelect: (selectedItem) => {
-                // Find the corresponding EVA number
+                // Finden der Korespondierenden EVA Nummer
                 const selectedStation = stationData.find(station => station.name === selectedItem);
                 if (selectedStation) {
                     console.log('Selected Station:', selectedStation.name);
@@ -254,15 +254,13 @@ foreach ($stationsArray['result'] as $station) {
 
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
-            // Get the submit button and loading spinner
+            // Erhalten der Submit Schaltfläche und den Lade-Spinner 
             const submitButton = document.querySelector('button[type="submit"]');
             const loadingSpinner = document.getElementById('loadingSpinner');
 
-            // Disable the button and show the spinner
+            // Ausschalten der Schaltfläche und Zeigen des Spinners
             submitButton.disabled = true;
             submitButton.innerHTML = '<span class="spinner-border spinner-border-xs" role="status" aria-hidden="true"></span> Suchen...';
-            // Optionally, show the spinner div if you want a larger spinner
-            // loadingSpinner.classList.remove('d-none');
         });
     </script>
 
