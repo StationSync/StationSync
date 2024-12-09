@@ -1,5 +1,5 @@
 <?php
-</* aufrufen der timetable API mithilfe von PHP sortiert nach Stationen, zurück kommt eine JSON Objekt 
+/* aufrufen der timetable API mithilfe von PHP sortiert nach Stationen, zurück kommt eine JSON Objekt 
 dieser Code bezieht sich auf die genaue Zeit und stunden die über die Startseite eingegeben wurden.
 */
 require __DIR__ . '/../helper_functions/getenv.php';
