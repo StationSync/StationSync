@@ -13,7 +13,7 @@ function xml_to_json($xml, $options = false) {
         return false;
     }
 
-    //Konvertiert ein einfaches XML Element in ein Array 
+    //Konvertiert ein XML Element in ein Array 
     $array = xml_to_array($xml);
 
     //Konvertiert ein array zu JSON 
@@ -23,7 +23,7 @@ function xml_to_json($xml, $options = false) {
 }
 
 function xml_to_array($xml) {
-    // Wenn es ein einfaches XML Element ist, wird es in ein array umgewandelt
+    // Wenn es ein XML Element ist, wird es in ein array umgewandelt
     if ($xml instanceof SimpleXMLElement) {
         $xml = (array) $xml;
     }
