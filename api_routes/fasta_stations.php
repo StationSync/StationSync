@@ -1,5 +1,6 @@
 <?php
 
+// aufrufen der Fasta API mithilfe von PHP, zurück kommt eine JSON Objekt
 function getFacilitiesByStation($station) {
     loadEnv();
 
