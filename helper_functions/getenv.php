@@ -1,7 +1,5 @@
 <?php
 
-// Der Komposer benötigt vlucas/phpdotenv
-
 // Einlesen des Envirement Files und Fehler wenn er nicht gefunden wird
 function loadEnv($path = __DIR__ . '/../.env') {
 
