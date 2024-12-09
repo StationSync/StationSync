@@ -1,3 +1,5 @@
+
+//Klasse zur automatischen Komplettierung der Daten in der index.php (für die Stationen)
 class AutocompleteInput {
     constructor(inputElement, options = {}) {
         this.input = inputElement;
@@ -10,18 +12,18 @@ class AutocompleteInput {
     }
 
     init() {
-        // Create wrapper
+        // Erstellen eines Wrappers
         this.wrapper = document.createElement('div');
         this.wrapper.className = 'autocomplete position-relative';
         this.input.parentNode.insertBefore(this.wrapper, this.input);
         this.wrapper.appendChild(this.input);
 
-        // Add bootstrap classes and placeholder
+        // hinzufügen von Bootstrap klassen und Platzhaltern
         this.input.classList.add('form-control');
         this.input.setAttribute('placeholder', this.placeholder);
         this.input.setAttribute('autocomplete', 'off');
 
-        // Bind events
+        //Verbindungs Events
         this.input.addEventListener('input', this.onInput.bind(this));
         this.input.addEventListener('keydown', this.onKeyDown.bind(this));
         document.addEventListener('click', this.closeAllLists.bind(this));
@@ -63,10 +65,10 @@ class AutocompleteInput {
         let items = this.wrapper.querySelector('.autocomplete-items');
         if (items) items = items.getElementsByTagName('div');
         
-        if (e.keyCode === 40) { // Down
+        if (e.keyCode === 40) { // Runter
             this.currentFocus++;
             this.addActive(items);
-        } else if (e.keyCode === 38) { // Up
+        } else if (e.keyCode === 38) { // Hoch
             this.currentFocus--;
             this.addActive(items);
         } else if (e.keyCode === 13) { // Enter
@@ -102,7 +104,7 @@ class AutocompleteInput {
         });
     }
 
-    // Public method to update data
+    // Öffentliche Methode um die Daten upzudaten
     updateData(newData) {
         this.data = newData;
     }
