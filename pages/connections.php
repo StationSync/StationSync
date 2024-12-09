@@ -16,6 +16,20 @@ $zipcode = $_GET['zipcode'];
 $city = $_GET['city'];
 $street = $_GET['street'];
 
+$hasParking = $_GET['hasParking'];
+$hasBicycleParking = $_GET['hasBicycleParking'];
+$hasLocalPublicTransport = $_GET['hasLocalPublicTransport'];
+$hasPublicFacilities = $_GET['hasPublicFacilities'];
+$hasLockerSystem = $_GET['hasLockerSystem'];
+$hasTaxiRank = $_GET['hasTaxiRank'];
+$hasTravelNecessities = $_GET['hasTravelNecessities'];
+$hasSteplessAccess = $_GET['hasSteplessAccess'];
+$hasWiFi = $_GET['hasWiFi'];
+$hasTravelCenter = $_GET['hasTravelCenter'];
+$hasRailwayMission = $_GET['hasRailwayMission'];
+$hasDBLounge = $_GET['hasDBLounge'];
+$hasLostAndFound = $_GET['hasLostAndFound'];
+$hasCarRental = $_GET['hasCarRental'];
 
 $formattedDate = date('ymd', strtotime($date));
 $hour = date('H', strtotime($time));
@@ -530,7 +544,22 @@ if ($timetable) {
         <p class="card-text"><strong>Postleitzahl:</strong> <?php echo htmlspecialchars($zipcode); ?></p>
         <p class="card-text"><strong>Stadt:</strong> <?php echo htmlspecialchars($city); ?></p>
         <p class="card-text"><strong>Straße:</strong> <?php echo htmlspecialchars($street); ?></p>
-      </div>
+      
+        <p class="card-text"><strong>Parking:</strong> <?php echo htmlspecialchars($hasParking); ?></p>
+<p class="card-text"><strong>Bicycle Parking:</strong> <?php echo htmlspecialchars($hasBicycleParking); ?></p>
+<p class="card-text"><strong>Local Public Transport:</strong> <?php echo htmlspecialchars($hasLocalPublicTransport); ?></p>
+<p class="card-text"><strong>Public Facilities:</strong> <?php echo htmlspecialchars($hasPublicFacilities); ?></p>
+<p class="card-text"><strong>Locker System:</strong> <?php echo htmlspecialchars($hasLockerSystem); ?></p>
+<p class="card-text"><strong>Taxi Rank:</strong> <?php echo htmlspecialchars($hasTaxiRank); ?></p>
+<p class="card-text"><strong>Travel Necessities:</strong> <?php echo htmlspecialchars($hasTravelNecessities); ?></p>
+<p class="card-text"><strong>Stepless Access:</strong> <?php echo htmlspecialchars($hasSteplessAccess); ?></p>
+<p class="card-text"><strong>WiFi:</strong> <?php echo htmlspecialchars($hasWiFi); ?></p>
+<p class="card-text"><strong>Travel Center:</strong> <?php echo htmlspecialchars($hasTravelCenter); ?></p>
+<p class="card-text"><strong>Railway Mission:</strong> <?php echo htmlspecialchars($hasRailwayMission); ?></p>
+<p class="card-text"><strong>DB Lounge:</strong> <?php echo htmlspecialchars($hasDBLounge); ?></p>
+<p class="card-text"><strong>Lost and Found:</strong> <?php echo htmlspecialchars($hasLostAndFound); ?></p>
+<p class="card-text"><strong>Car Rental:</strong> <?php echo htmlspecialchars($hasCarRental); ?></p>
+    </div>
     </div>
   </div>
 </div>
