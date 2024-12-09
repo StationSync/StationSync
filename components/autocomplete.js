@@ -23,7 +23,7 @@ class AutocompleteInput {
         this.input.setAttribute('placeholder', this.placeholder);
         this.input.setAttribute('autocomplete', 'off');
 
-        //Verbindungs Events
+        //fügt Events hinzu
         this.input.addEventListener('input', this.onInput.bind(this));
         this.input.addEventListener('keydown', this.onKeyDown.bind(this));
         document.addEventListener('click', this.closeAllLists.bind(this));
