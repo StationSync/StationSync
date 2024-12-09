@@ -1,30 +1,31 @@
 <?php
-// Set default values for form inputs
+// Standart für form Eingaben
 $trainStation = isset($_GET['trainStation']) ? htmlspecialchars($_GET['trainStation']) : '';
 $trainStation2 = isset($_GET['trainStation2']) ? htmlspecialchars($_GET['trainStation']) : '';
 $datum = isset($_GET['datum']) ? htmlspecialchars($_GET['datum']) : date('Y-m-d');
 $uhrzeit = isset($_GET['uhrzeit']) ? htmlspecialchars($_GET['uhrzeit']) : date('H:i');
 
-// Fetch station data (all stations in Germany)
+// Import Code zum laden aller Stationen
 require_once './api_routes/stada_stations.php';
 
+// Cache Path
 $cacheFilePath = __DIR__ . '\cache\stations_cache.json';
 
-// Check if the cache file exists and is not empty
+// Check ob cache bereits vorhanden ist, wenn nicht erstellen
 if (file_exists($cacheFilePath) && filesize($cacheFilePath) > 0) {
-    // Read the cached data
+    // Cache Daten lesen
     $stations = file_get_contents($cacheFilePath);
 } else {
-    // Fetch station data (all stations in Germany)
+    // Stationen laden
     $stations = getStationsByCity();
 
-    // Update the cache file with the new data
+    // Cache updaten
     file_put_contents($cacheFilePath, $stations);
 }
 $stationsArray = json_decode($stations, true);
-$stationData = []; // Initialize an array to hold station names and EVA numbers
+$stationData = []; // StationsDaten Array
 
-// Loop through each station and extract the name and EVA number
+// Loop auf alle Stationen 
 foreach ($stationsArray['result'] as $station) {
     // Check if evaNumbers exist and is not empty
     if (!empty($station['evaNumbers'])) {
