@@ -1,11 +1,11 @@
 <?php
 
 function console_log($data, $context = 'log') {
-    // Validate context
+    // Validiert den Kontext
     $validContexts = ['log', 'info', 'warn', 'error', 'debug'];
     $context = in_array($context, $validContexts) ? $context : 'log';
 
-    // Convert data to JSON
+    //Konvertiert die Daten in JSON
     if (is_null($data)) {
         $output = 'null';
     } elseif (is_bool($data)) {
@@ -16,9 +16,9 @@ function console_log($data, $context = 'log') {
         $output = json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    // Escape single quotes and prepare the script
+    //Entfernen des einfachen hochkommas und vorbereiten für das Script
     $output = str_replace("'", "\\'", $output);
 
-    // Output script to log to console
+    //Ausgabe des Output Skriptes zu der log Konsole 
     echo "<script>console.{$context}('{$output}');</script>";
 }
