@@ -222,8 +222,8 @@ if ($timetable) {
     </style>
 </head>
 
-<body>
-
+<body class="bg-light d-flex flex-column min-vh-100">
+<main class="flex-grow-1">
     <div id="loadingContainer" class="container text-center my-5">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -242,7 +242,6 @@ if ($timetable) {
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <h1 class="navbar-brand">Zugverbindungen von <?php echo htmlspecialchars($station); ?></h1>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="../index.php">Startseite</a></li>
@@ -250,6 +249,8 @@ if ($timetable) {
                 </ul>
             </div>
     </nav>
+
+    <h1>Zugverbindungen von <?php echo htmlspecialchars($station); ?></h1>
 
     <?php if (!empty($errorMessage)): ?>
         <div class="error">
@@ -468,23 +469,28 @@ if ($timetable) {
             </table>
         </div>
     <?php endif; ?>
+    </main>
 
-    <iframe
-        width="25%"
-        height="250"
+    <div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-6">
+      <iframe
+        width="100%"
+        height="300"
         src="https://www.openstreetmap.org/export/embed.html?bbox=<?php echo ($longitude - 0.01); ?>,<?php echo ($latitude - 0.01); ?>,<?php echo ($longitude + 0.01); ?>,<?php echo ($latitude + 0.01); ?>&layer=mapnik"
-        style="border: 1px solid black">
-    </iframe>
-
-    <div class="card" style="width: 25%; float: right; margin-left: 20px;">
-        <div class="card-body">
-            <h5 class="card-title">Informationen</h5>
-            <p class="card-text"><strong>Postleitzahl:</strong> <?php echo htmlspecialchars($zipcode); ?></p>
-            <p class="card-text"><strong>Stadt:</strong> <?php echo htmlspecialchars($city); ?></p>
-            <p class="card-text"><strong>Straße:</strong> <?php echo htmlspecialchars($street); ?></p>
-        </div>
+        style="border: 1px solid #dee2e6; border-radius: 0.25rem;">
+      </iframe>
     </div>
-
+    <div class="col-md-6">
+      <div class="card-body">
+        <h5 class="card-title">Informationen</h5>
+        <p class="card-text"><strong>Postleitzahl:</strong> <?php echo htmlspecialchars($zipcode); ?></p>
+        <p class="card-text"><strong>Stadt:</strong> <?php echo htmlspecialchars($city); ?></p>
+        <p class="card-text"><strong>Straße:</strong> <?php echo htmlspecialchars($street); ?></p>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Der Footer -->
     <?php include '../components/footer.php'; ?>
 

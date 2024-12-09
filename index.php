@@ -66,7 +66,8 @@ foreach ($stationsArray['result'] as $station) {
 
 <!-- Die Navigationbar -->
 
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
+    <main class="flex-grow-1">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="#"><i class="fas fa-train me-2"></i>StationSync</a>
@@ -137,7 +138,7 @@ foreach ($stationsArray['result'] as $station) {
             </div>
         </div>
     </div>
-
+    </main>
     <!-- Der Footer -->
     <?php include './components/footer.php'; ?>
 
