@@ -196,7 +196,7 @@ if ($timetable) {
 
         // Überprüfen ob keine Verbindungen gefunden wurden 
         if (empty($connections)) {
-            $errorMessage = "No connections found for this station and time.";
+            $errorMessage = "Es wurden keine Verbindungen für diesen Bahnhof an diesem Zeitpunkt gefunden.";
         }
     }
 }
