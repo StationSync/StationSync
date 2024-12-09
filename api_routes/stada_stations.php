@@ -1,5 +1,5 @@
 <?php
-
+// aufrufen der Stations Daten API mithilfe von PHP, zurück kommt eine JSON Objekt
 require __DIR__ . '/../helper_functions/getenv.php';
 
 function getStationsByCity() {
