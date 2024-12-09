@@ -90,14 +90,13 @@ foreach ($stationsArray['result'] as $station) {
     <main class="flex-grow-1">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="#"><i class="fas fa-train me-2"></i>StationSync</a>
+                <a class="navbar-brand"><i class="fas fa-train me-2"></i>StationSync</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.php">Startseite</a></li>
-                        <li class="nav-item"><a class="nav-link" href="pages/about.html">Über uns</a></li>
+                        <li class="nav-item" disabled><a class="nav-link" href="index.php">Startseite</a></li>
                     </ul>
                 </div>
         </nav>
@@ -163,7 +162,7 @@ foreach ($stationsArray['result'] as $station) {
                                 <button type="submit" class="btn btn-primary btn-lg w-100"><i class="fas fa-search me-2"></i>Bahnverbindung suchen</button>
                             </form>
                             <div id="loadingSpinner" class="text-center d-none">
-                                <div class="spinner-border text-primary" role="status">
+                                <div class="spinner-border text-primary" style="width: 1rem; height: 1rem;" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
@@ -261,8 +260,7 @@ foreach ($stationsArray['result'] as $station) {
 
             // Disable the button and show the spinner
             submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Suchen...';
-
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-xs" role="status" aria-hidden="true"></span> Suchen...';
             // Optionally, show the spinner div if you want a larger spinner
             // loadingSpinner.classList.remove('d-none');
         });

@@ -57,3 +57,9 @@ footer {
     height: 3rem;
     margin-top: 10px;
 }
+
+.spinner-border-xs {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-width: 0.1em;
+}

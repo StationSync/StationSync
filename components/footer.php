@@ -19,8 +19,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Für Fragen oder Anliegen wenden Sie sich bitte an unseren
-                    <a href="pages/contact.html">Kontakt</a>.
+                    Für Fragen oder Anliegen wenden Sie sich bitte an unseren Kontakt.
                 </p>
             </div>
             <div class="modal-footer">
@@ -66,7 +65,7 @@
             <div class="modal-body">
                 <p>
                     Wir nehmen den Schutz Ihrer persönlichen Daten ernst. Bitte lesen Sie unsere
-                    <a href="pages/datenschutz.html">Datenschutzerklärung</a>, um mehr über die Verarbeitung und den
+                    Datenschutzerklärung, um mehr über die Verarbeitung und den
                     Schutz Ihrer Daten zu erfahren.
                 </p>
             </div>

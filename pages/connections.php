@@ -252,14 +252,16 @@ if ($timetable) {
 </head>
 
 <body class="bg-light d-flex flex-column min-vh-100">
-<main class="flex-grow-1">
-    <div id="loadingContainer" class="container text-center my-5">
+    
+<div id="loadingContainer" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white" style="z-index: 9999;">
+    <div class="text-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <p>Verbindungen werden geladen...</p>
+        <p class="mt-3">Verbindungen werden geladen...</p>
     </div>
-
+</div>
+<main class="flex-grow-1">
     <!-- Hide this container when content is loaded -->
     <div id="connectionsContent" class="d-none">
         <!-- Your existing connections content -->
@@ -267,14 +269,13 @@ if ($timetable) {
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-train me-2"></i>StationSync</a>
+            <a class="navbar-brand" href="../index.php"><i class="fas fa-train me-2"></i>StationSync</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="../index.php">Startseite</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./about.html">Über uns</a></li>
                 </ul>
             </div>
     </nav>
@@ -530,10 +531,9 @@ if ($timetable) {
 
 <div class="card mb-3">
   <div class="row g-0">
-    <div class="col-md-6">
+    <div class="col-md-6 d-flex">
       <iframe
         width="100%"
-        height="300"
         src="https://www.openstreetmap.org/export/embed.html?bbox=<?php echo ($longitude - 0.01); ?>,<?php echo ($latitude - 0.01); ?>,<?php echo ($longitude + 0.01); ?>,<?php echo ($latitude + 0.01); ?>&layer=mapnik"
         style="border: 1px solid #dee2e6; border-radius: 0.25rem;">
       </iframe>
@@ -541,25 +541,43 @@ if ($timetable) {
     <div class="col-md-6">
       <div class="card-body">
         <h5 class="card-title">Informationen</h5>
-        <p class="card-text"><strong>Postleitzahl:</strong> <?php echo htmlspecialchars($zipcode); ?></p>
-        <p class="card-text"><strong>Stadt:</strong> <?php echo htmlspecialchars($city); ?></p>
-        <p class="card-text"><strong>Straße:</strong> <?php echo htmlspecialchars($street); ?></p>
-      
-        <p class="card-text"><strong>Parking:</strong> <?php echo htmlspecialchars($hasParking); ?></p>
-<p class="card-text"><strong>Bicycle Parking:</strong> <?php echo htmlspecialchars($hasBicycleParking); ?></p>
-<p class="card-text"><strong>Local Public Transport:</strong> <?php echo htmlspecialchars($hasLocalPublicTransport); ?></p>
-<p class="card-text"><strong>Public Facilities:</strong> <?php echo htmlspecialchars($hasPublicFacilities); ?></p>
-<p class="card-text"><strong>Locker System:</strong> <?php echo htmlspecialchars($hasLockerSystem); ?></p>
-<p class="card-text"><strong>Taxi Rank:</strong> <?php echo htmlspecialchars($hasTaxiRank); ?></p>
-<p class="card-text"><strong>Travel Necessities:</strong> <?php echo htmlspecialchars($hasTravelNecessities); ?></p>
-<p class="card-text"><strong>Stepless Access:</strong> <?php echo htmlspecialchars($hasSteplessAccess); ?></p>
-<p class="card-text"><strong>WiFi:</strong> <?php echo htmlspecialchars($hasWiFi); ?></p>
-<p class="card-text"><strong>Travel Center:</strong> <?php echo htmlspecialchars($hasTravelCenter); ?></p>
-<p class="card-text"><strong>Railway Mission:</strong> <?php echo htmlspecialchars($hasRailwayMission); ?></p>
-<p class="card-text"><strong>DB Lounge:</strong> <?php echo htmlspecialchars($hasDBLounge); ?></p>
-<p class="card-text"><strong>Lost and Found:</strong> <?php echo htmlspecialchars($hasLostAndFound); ?></p>
-<p class="card-text"><strong>Car Rental:</strong> <?php echo htmlspecialchars($hasCarRental); ?></p>
-    </div>
+        <p class="card-text">
+          <i class="fas fa-map-marker-alt me-2"></i>
+          <strong>Adresse:</strong> <?php echo htmlspecialchars($zipcode); ?>, <?php echo htmlspecialchars($city); ?>, <?php echo htmlspecialchars($street); ?>
+        </p>
+        
+        <?php
+        $facilities = [
+            'Parkplatz' => ['hasParking', 'fa-parking'],
+            'Fahrradparkplatz' => ['hasBicycleParking', 'fa-bicycle'],
+            'Öffentliche Verkehrsmittel' => ['hasLocalPublicTransport', 'fa-bus'],
+            'Öffentliche Einrichtungen' => ['hasPublicFacilities', 'fa-restroom'],
+            'Schließfachsystem' => ['hasLockerSystem', 'fa-lock'],
+            'Taxi-Halteplatz' => ['hasTaxiRank', 'fa-taxi'],
+            'Reisebedarf' => ['hasTravelNecessities', 'fa-shopping-bag'],
+            'Barrierefreier Zugang' => ['hasSteplessAccess', 'fa-wheelchair'],
+            'WiFi' => ['hasWiFi', 'fa-wifi'],
+            'Reisezentrum' => ['hasTravelCenter', 'fa-info-circle'],
+            'Eisenbahnmision' => ['hasRailwayMission', 'fa-cross'],
+            'DB Lounge' => ['hasDBLounge', 'fa-couch'],
+            'Fundbüro' => ['hasLostAndFound', 'fa-box-open'],
+            'Autovermietung' => ['hasCarRental', 'fa-car']
+        ];
+
+        foreach ($facilities as $name => $data):
+            $var = $data[0];
+            $icon = $data[1];
+            $isAvailable = ($$var == 'true' || $$var == '1' || $$var === true);
+            $color = $isAvailable ? 'text-success' : 'text-danger';
+        ?>
+            <p class="card-text">
+                <i class="fas <?php echo $icon; ?> me-2 <?php echo $color; ?>"></i>
+                <strong><?php echo $name; ?></strong>
+            </p>
+        <?php
+        endforeach;
+        ?>
+      </div>
     </div>
   </div>
 </div>
