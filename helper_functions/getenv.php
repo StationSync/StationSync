@@ -1,6 +1,6 @@
 <?php
 
-// Einlesen des Envirement Files und Fehler wenn er nicht gefunden wird
+// Einlesen des Envirement Files
 function loadEnv($path = __DIR__ . '/../.env') {
 
 if(!file_exists($path)) {
